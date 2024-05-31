@@ -26,7 +26,7 @@ async def change_mail(new_email: EmailStr,
 
 
 @router.patch('/change-name')
-async def change_mail(user: ChangeUserSchema,
+async def change_name(user: ChangeUserSchema,
                       uow: UnitOfWork = Depends(UnitOfWork),
                       account: str = Depends(get_current_user)) -> JSONResponse:
     try:
