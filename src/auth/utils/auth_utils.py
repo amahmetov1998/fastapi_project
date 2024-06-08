@@ -1,29 +1,26 @@
 from fastapi import Depends, HTTPException
-from pydantic import EmailStr
 from starlette import status
-
 from src.services.account_service import AccountService
 from src.services.user_service import UserService
 from src.utils.unit_of_work import UnitOfWork
 from src.auth.utils.JWT_service import get_data_from_token_payload
-from src.schemas.user import UserSchema
+from src.schemas.user import SignInSchema
 from src.models.account import Account
 
 
-async def check_account(account: EmailStr, uow: UnitOfWork = Depends(UnitOfWork)) -> None | EmailStr:
-    _obj: None | Account = await AccountService().check_email(uow=uow, account=account)
-    if _obj:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail="mail already exists")
-    return account
-
-
-async def get_current_mail(payload: dict = Depends(get_data_from_token_payload)) -> str:
+async def get_current_auth_user(payload: dict = Depends(get_data_from_token_payload),
+                                uow: UnitOfWork = Depends(UnitOfWork)) -> str:
     email: str = payload.get("email")
-    return email
+    try:
+        await AccountService().check_admin_user(uow=uow, account=email)
+        return email
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail='do not have rights')
 
 
-async def get_current_user(payload: dict = Depends(get_data_from_token_payload), uow: UnitOfWork = Depends(UnitOfWork)) -> str:
+async def get_current_user(payload: dict = Depends(get_data_from_token_payload),
+                           uow: UnitOfWork = Depends(UnitOfWork)) -> str:
     email: str = payload.get("email")
     _obj: None | Account = await AccountService().check_email(uow=uow, account=email)
     if not _obj:
@@ -32,7 +29,7 @@ async def get_current_user(payload: dict = Depends(get_data_from_token_payload),
     return email
 
 
-async def validate_auth_user(user: UserSchema, uow: UnitOfWork = Depends(UnitOfWork)) -> UserSchema:
+async def validate_auth_user(user: SignInSchema, uow: UnitOfWork = Depends(UnitOfWork)) -> SignInSchema:
     try:
         await UserService().check_user(uow=uow,
                                        account=user.mail,

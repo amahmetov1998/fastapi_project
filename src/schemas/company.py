@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
-class CreateCompanySchema(BaseModel):
+class AddCompanySchema(BaseModel):
+    account: EmailStr
     password: str
     first_name: str
     last_name: str

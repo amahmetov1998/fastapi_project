@@ -7,6 +7,7 @@ from src.models.user import User
 
 if TYPE_CHECKING:
     from src.models.user import User
+    from src.models.invite import Invite
 
 
 class Account(Base):
@@ -15,3 +16,4 @@ class Account(Base):
     id: Mapped[pk]
     mail: Mapped[custom_string] = mapped_column(unique=True)
     user: Mapped["User"] = relationship(secondary="secrets", back_populates="account")
+    invite_token: Mapped["Invite"] = relationship(back_populates="account")

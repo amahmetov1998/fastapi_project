@@ -1,4 +1,4 @@
-from src.models.members import Members
+from src.models import Members
 
 from src.utils.repository import SqlAlchemyRepository
 

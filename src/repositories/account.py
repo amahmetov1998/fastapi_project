@@ -1,7 +1,7 @@
 from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 
-from src.models.account import Account
+from src.models import Account
 from src.utils.repository import SqlAlchemyRepository
 
 
