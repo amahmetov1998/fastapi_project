@@ -9,7 +9,7 @@ from src.services.user_service import UserService
 from src.auth.utils.auth_utils import get_current_auth_user
 from src.utils.unit_of_work import UnitOfWork
 
-router = APIRouter(prefix="/api/v1", tags=["Create user"])
+router = APIRouter(prefix="/api/v1", tags=["User creation"])
 
 
 @router.post('/add-user')

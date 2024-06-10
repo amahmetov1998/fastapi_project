@@ -8,7 +8,7 @@ from src.utils.unit_of_work import UnitOfWork
 from fastapi import HTTPException
 from src.schemas.user import UpdateUserSchema
 
-router = APIRouter(prefix="/api/v1", tags=["Update user"])
+router = APIRouter(prefix="/api/v1", tags=["User update"])
 
 
 @router.patch('/update-mail')

@@ -27,7 +27,7 @@ async def delete_department(department: DepartmentSchema, uow: UnitOfWork = Depe
         await DepartmentService().delete_department(uow=uow, department_name=department.name)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail="")
+                            detail="invalid data")
 
     return JSONResponse(content="deleted successfully",
                         status_code=status.HTTP_201_CREATED)

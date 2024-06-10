@@ -15,3 +15,8 @@ class PositionService:
     async def update_position(cls, uow: UnitOfWork, old_position_name: str, new_position_name: str) -> None:
         async with uow:
             await uow.position.update_position_name(old_name=old_position_name, new_name=new_position_name)
+
+    @classmethod
+    async def delete_position(cls, uow: UnitOfWork, position_name: str) -> None:
+        async with uow:
+            await uow.position.delete_by_query(name=position_name)

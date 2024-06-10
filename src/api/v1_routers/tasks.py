@@ -6,7 +6,7 @@ from src.services.task_service import TaskService
 from src.auth.utils.auth_utils import get_current_auth_user
 from src.utils.unit_of_work import UnitOfWork
 
-router = APIRouter(prefix="/api/v1", tags=["Create task"], dependencies=[Depends(get_current_auth_user)])
+router = APIRouter(prefix="/api/v1", tags=["Task"], dependencies=[Depends(get_current_auth_user)])
 
 
 @router.post('/add-task')

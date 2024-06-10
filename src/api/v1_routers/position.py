@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from starlette.responses import JSONResponse
 
 from src.services.position_service import PositionService
-from src.schemas.position import AddPositionSchema, UpdatePositionSchema
+from src.schemas.position import AddPositionSchema, UpdatePositionSchema, DeletePositionSchema
 from src.auth.utils.auth_utils import get_current_auth_user
 from src.utils.unit_of_work import UnitOfWork
 
-router = APIRouter(prefix="/api/v1", tags=["Create position"], dependencies=[Depends(get_current_auth_user)])
+router = APIRouter(prefix="/api/v1", tags=["Position"], dependencies=[Depends(get_current_auth_user)])
 
 
 @router.post('/add-position')
@@ -33,7 +33,21 @@ async def update_position(position: UpdatePositionSchema,
                                                 new_position_name=position.new_position_name)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail="")
+                            detail="invalid data")
 
     return JSONResponse(content="updated successfully",
+                        status_code=status.HTTP_201_CREATED)
+
+
+@router.delete('/delete-position')
+async def delete_position(position: DeletePositionSchema,
+                          uow: UnitOfWork = Depends(UnitOfWork)):
+    try:
+        await PositionService().delete_position(uow=uow,
+                                                position_name=position.position_name)
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail="invalid data")
+
+    return JSONResponse(content="deleted successfully",
                         status_code=status.HTTP_201_CREATED)
