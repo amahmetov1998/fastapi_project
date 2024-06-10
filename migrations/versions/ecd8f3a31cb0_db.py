@@ -1,8 +1,8 @@
 """DB
 
-Revision ID: 7e34aac7a7d2
+Revision ID: ecd8f3a31cb0
 Revises: 
-Create Date: 2024-06-08 00:55:40.426805
+Create Date: 2024-06-10 17:37:54.894334
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
-revision: str = '7e34aac7a7d2'
+revision: str = 'ecd8f3a31cb0'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -65,10 +65,10 @@ def upgrade() -> None:
     sa.Column('task_responsible_id', sa.Integer(), nullable=True),
     sa.Column('task_observer_id', sa.Integer(), nullable=True),
     sa.Column('task_executor_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['task_author_id'], ['task.id'], ),
-    sa.ForeignKeyConstraint(['task_executor_id'], ['task.id'], ),
-    sa.ForeignKeyConstraint(['task_observer_id'], ['task.id'], ),
-    sa.ForeignKeyConstraint(['task_responsible_id'], ['task.id'], ),
+    sa.ForeignKeyConstraint(['task_author_id'], ['task.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['task_executor_id'], ['task.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['task_observer_id'], ['task.id'], ondelete='SET NULL'),
+    sa.ForeignKeyConstraint(['task_responsible_id'], ['task.id'], ondelete='SET NULL'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('task_author_id'),
     sa.UniqueConstraint('task_responsible_id')
@@ -97,8 +97,8 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('position_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['position_id'], ['position.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.ForeignKeyConstraint(['position_id'], ['position.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('position_id'),
     sa.UniqueConstraint('user_id')
@@ -108,7 +108,7 @@ def upgrade() -> None:
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('path', sqlalchemy_utils.types.ltree.LtreeType(), nullable=False),
     sa.Column('user_position_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['user_position_id'], ['users_positions.id'], ),
+    sa.ForeignKeyConstraint(['user_position_id'], ['users_positions.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_user_path', 'struct_adm', ['path'], unique=False, postgresql_using='gist')
@@ -116,8 +116,8 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('struct_adm_id', sa.Integer(), nullable=False),
     sa.Column('position_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['position_id'], ['position.id'], ),
-    sa.ForeignKeyConstraint(['struct_adm_id'], ['struct_adm.id'], ),
+    sa.ForeignKeyConstraint(['position_id'], ['position.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['struct_adm_id'], ['struct_adm.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('position_id')
     )

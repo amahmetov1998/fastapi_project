@@ -17,7 +17,7 @@ class StructAdm(Base):
     name = Column(String)
     path = Column(LtreeType, nullable=False)
 
-    user_position_id = mapped_column(ForeignKey("users_positions.id"))
+    user_position_id = mapped_column(ForeignKey("users_positions.id", ondelete="CASCADE"))
 
     parent = relationship('StructAdm',
                           primaryjoin=remote(path) == foreign(func.subpath(path, 0, -1)),

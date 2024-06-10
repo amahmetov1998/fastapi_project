@@ -9,5 +9,5 @@ class StructAdmPositions(Base):
     __tablename__ = 'struct_adm_positions'
 
     id: Mapped[pk]
-    struct_adm_id: Mapped[int] = mapped_column(ForeignKey("struct_adm.id"))
-    position_id: Mapped[int] = mapped_column(ForeignKey("position.id"), unique=True)
+    struct_adm_id: Mapped[int] = mapped_column(ForeignKey("struct_adm.id", ondelete="CASCADE"))
+    position_id: Mapped[int] = mapped_column(ForeignKey("position.id", ondelete="CASCADE"), unique=True)

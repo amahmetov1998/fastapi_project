@@ -25,7 +25,7 @@ async def assign_leader(data: AssignLeaderSchema, uow: UnitOfWork = Depends(Unit
                         status_code=status.HTTP_201_CREATED)
 
 
-@router.post('/reassign-leader')
+@router.patch('/reassign-leader')
 async def reassign_user(data: ReassignSchema, uow: UnitOfWork = Depends(UnitOfWork)):
     try:
         await AssignService().reassign_user(uow=uow,
@@ -37,10 +37,10 @@ async def reassign_user(data: ReassignSchema, uow: UnitOfWork = Depends(UnitOfWo
                             detail="invalid data")
 
     return JSONResponse(content="reassigned successfully",
-                        status_code=status.HTTP_201_CREATED)
+                        status_code=status.HTTP_200_OK)
 
 
-@router.post('/assign-worker')
+@router.patch('/assign-worker')
 async def assign_worker(data: AssignUserSchema, uow: UnitOfWork = Depends(UnitOfWork)):
     try:
         await AssignService().assign_user(uow=uow,

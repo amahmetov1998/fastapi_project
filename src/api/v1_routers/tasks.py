@@ -31,7 +31,7 @@ async def add_task(new_task: AddTaskSchema,
                         status_code=status.HTTP_201_CREATED)
 
 
-@router.post('/update-task-title')
+@router.patch('/update-task-title')
 async def update_task_title(task: UpdateTaskNameSchema,
                             uow: UnitOfWork = Depends(UnitOfWork)):
     try:
@@ -44,7 +44,7 @@ async def update_task_title(task: UpdateTaskNameSchema,
                         status_code=status.HTTP_200_OK)
 
 
-@router.post('/delete-task')
+@router.delete('/delete-task')
 async def delete_task(task: DeleteTaskSchema,
                       uow: UnitOfWork = Depends(UnitOfWork)):
     try:

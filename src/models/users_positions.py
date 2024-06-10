@@ -9,5 +9,5 @@ class UserPosition(Base):
     __tablename__ = 'users_positions'
 
     id: Mapped[pk]
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), unique=True)
-    position_id: Mapped[int] = mapped_column(ForeignKey("position.id"), unique=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"), unique=True)
+    position_id: Mapped[int] = mapped_column(ForeignKey("position.id", ondelete="CASCADE"), unique=True)

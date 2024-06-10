@@ -24,7 +24,7 @@ async def add_position(new_position: AddPositionSchema,
                         status_code=status.HTTP_201_CREATED)
 
 
-@router.post('/update-position')
+@router.patch('/update-position')
 async def update_position(position: UpdatePositionSchema,
                           uow: UnitOfWork = Depends(UnitOfWork)):
     try:
