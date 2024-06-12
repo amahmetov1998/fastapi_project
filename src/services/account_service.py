@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 
-from src.models import Account
+from src.models import Account, Secrets
 from src.utils.unit_of_work import UnitOfWork
 from src.models import Invite
 
@@ -21,10 +21,10 @@ class AccountService:
             invite.account_id = mail_id
 
     @classmethod
-    async def check_email(cls, uow: UnitOfWork, account: EmailStr) -> Account | None:
+    async def check_email(cls, uow: UnitOfWork, account: EmailStr) -> str:
         async with uow:
-            _obj: Account | None = await uow.account.get_by_query_one_or_none(mail=account)
-            return _obj
+            account: Account | None = await uow.account.get_by_query_one_or_none(mail=account)
+            return account.mail
 
     @classmethod
     async def check_admin_user(cls, uow: UnitOfWork, account: EmailStr) -> None:
@@ -36,11 +36,11 @@ class AccountService:
                 raise
 
     @classmethod
-    async def update_email(cls, uow: UnitOfWork, new_email: EmailStr, account: str) -> None:
+    async def update_email(cls, uow: UnitOfWork, new_email: str, _id: int) -> None:
         async with uow:
             exists: Account | None = await uow.account.get_by_query_one_or_none(mail=new_email)
             if exists:
                 raise
 
-            await uow.account.update_mail(new_email=new_email,
-                                          old_email=account)
+            secrets: Secrets | None = await uow.secrets.get_by_query_one_or_none(user_id=_id)
+            await uow.account.update_one_by_id(_id=secrets.account_id, mail=new_email)

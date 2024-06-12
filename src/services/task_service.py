@@ -29,11 +29,11 @@ class TaskService:
                 await uow.user.update_one_by_id(_id=executor_id, task_executor_id=task_id)
 
     @classmethod
-    async def update_task_title(cls, uow: UnitOfWork, old_name: str, new_name: str) -> None:
+    async def update_task_title(cls, uow: UnitOfWork, _id: int, new_name: str) -> None:
         async with uow:
-            await uow.task.update_one_by_title(old_title=old_name, new_title=new_name)
+            await uow.task.update_one_by_id(_id=_id, new_title=new_name)
 
     @classmethod
-    async def delete_task(cls, uow: UnitOfWork, title: str) -> None:
+    async def delete_task(cls, uow: UnitOfWork, _id: int) -> None:
         async with uow:
-            await uow.task.delete_by_query(title=title)
+            await uow.task.delete_by_query(id=_id)

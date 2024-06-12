@@ -12,11 +12,11 @@ class PositionService:
             await uow.struct_position.add_one(struct_adm_id=department.id, position_id=position_id)
 
     @classmethod
-    async def update_position(cls, uow: UnitOfWork, old_position_name: str, new_position_name: str) -> None:
+    async def update_position(cls, uow: UnitOfWork, _id: int, new_position_name: str) -> None:
         async with uow:
-            await uow.position.update_position_name(old_name=old_position_name, new_name=new_position_name)
+            await uow.position.update_one_by_id(_id=_id, name=new_position_name)
 
     @classmethod
-    async def delete_position(cls, uow: UnitOfWork, position_name: str) -> None:
+    async def delete_position(cls, uow: UnitOfWork, _id: int) -> None:
         async with uow:
-            await uow.position.delete_by_query(name=position_name)
+            await uow.position.delete_by_query(id=_id)

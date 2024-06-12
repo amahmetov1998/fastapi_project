@@ -7,9 +7,5 @@ class AddPositionSchema(BaseModel):
 
 
 class UpdatePositionSchema(BaseModel):
-    old_position_name: str
+    id: int
     new_position_name: str
-
-
-class DeletePositionSchema(BaseModel):
-    position_name: str

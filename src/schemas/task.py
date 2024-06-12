@@ -14,9 +14,5 @@ class AddTaskSchema(BaseModel):
 
 
 class UpdateTaskNameSchema(BaseModel):
-    old_title: str
+    id: int
     new_title: str
-
-
-class DeleteTaskSchema(BaseModel):
-    title: str

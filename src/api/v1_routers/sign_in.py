@@ -11,7 +11,8 @@ router = APIRouter(prefix="/api/v1", tags=["Sign in"])
 @router.post('/sign-in', response_model=TokenInfo)
 async def sign_in(user: SignInSchema = Depends(validate_auth_user)):
     jwt_payload: dict = {
-        "email": user.mail
+        "email": user.mail,
+        "id": user.id
     }
     token: str = JWT_service.encode_jwt(payload=jwt_payload)
 

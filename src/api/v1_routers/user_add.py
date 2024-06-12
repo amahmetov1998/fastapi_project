@@ -14,28 +14,28 @@ router = APIRouter(prefix="/api/v1", tags=["User creation"])
 
 @router.post('/add-user')
 async def add_user(new_user: AddUserSchema,
-                   account: str = Depends(get_current_auth_user),
-                   uow: UnitOfWork = Depends(UnitOfWork)):
+                   _id: int = Depends(get_current_auth_user),
+                   uow: UnitOfWork = Depends(UnitOfWork)) -> JSONResponse:
     try:
         token: int = token_service.create_token()
-        email: str = await UserService().add_user(uow=uow,
-                                                  admin_account=account,
-                                                  first_name=new_user.first_name,
-                                                  last_name=new_user.last_name,
-                                                  email=new_user.email,
-                                                  invite_token=token)
+        await UserService().add_user(uow=uow,
+                                     _id=_id,
+                                     first_name=new_user.first_name,
+                                     last_name=new_user.last_name,
+                                     email=new_user.email,
+                                     invite_token=token)
     except Exception:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail="mail already exists")
+                            detail="invalid data")
 
-    await email_service.send_email(email=email, token=token)
+    await email_service.send_email(email=new_user.email, token=token)
 
     return JSONResponse(content="please, check email",
                         status_code=status.HTTP_200_OK)
 
 
 @router.post('/add-user-complete')
-async def set_password(code: TokenSchema, data: PasswordSchema, uow: UnitOfWork = Depends(UnitOfWork)):
+async def set_password(code: TokenSchema, data: PasswordSchema, uow: UnitOfWork = Depends(UnitOfWork)) -> JSONResponse:
     try:
         await UserService().set_password(uow=uow, invite_token=code.invite_token, password=data.password)
     except Exception:
