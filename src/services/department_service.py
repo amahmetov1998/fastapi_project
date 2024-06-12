@@ -1,3 +1,4 @@
+from sqlalchemy import text
 from sqlalchemy_utils import Ltree
 
 from src.models import StructAdm
@@ -28,20 +29,41 @@ class DepartmentService:
             await uow.department.update_one_by_id(_id=_id, name=name)
 
     @classmethod
-    async def change_struct(cls, uow: UnitOfWork, _id: int) -> None:
-        async with async_engine.begin() as conn:
-            seq = await conn.execute(id_seq)
-            id_ = Ltree(str(seq))
+    async def change_struct(cls, _id: int) -> None:
 
-        async with uow:
-            node = await uow.department.get_by_query_one_or_none(id=_id)
+        # async with uow:
+        #     node = await uow.department.get_by_query_one_or_none(id=_id)
+        #
+        #     parent = await uow.department.get_parent(node=node)
+        #
+        #     children: list = await uow.department.get_children(node=node)
+        #     children.remove(node)
+        #
+        #     for child in children:
+        #         child.path = parent.path + child.path[2:]
+        #
+        #     node.path = id_
 
-            parent = await uow.department.get_parent(node=node)
+        async with async_session_maker() as session:
+            data = {'group_id_str': str(_id), 'group_id_int': _id}
 
-            children: list = await uow.department.get_children(node=node)
-            children.remove(node)
-
-            for child in children:
-                child.path = parent.path + child.path[2:]
-
-            node.path = id_
+            sql = text(
+                """
+                UPDATE public.struct_adm t
+                SET path = nu.new_path
+                FROM  (
+                   WITH x AS (
+                      SELECT *, index(path, :group_id_str) AS i
+                      FROM   public.struct_adm
+                      WHERE  path ~ '*.:group_id_int.*'
+                      )
+                   SELECT
+                        *,
+                        subpath(path, 0, i) || CASE WHEN nlevel(path) > i+1 THEN subpath(path, i+1) ELSE '' END AS new_path
+                   FROM x
+                   ) nu
+                WHERE nu.id = t.id AND t.id <> :group_id_int;
+                """,
+            )
+            await session.execute(sql, data)
+            await session.commit()

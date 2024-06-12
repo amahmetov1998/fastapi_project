@@ -7,7 +7,7 @@ from src.auth.utils.auth_utils import get_current_auth_user
 from src.utils.unit_of_work import UnitOfWork
 
 router = APIRouter(prefix="/api/v1", tags=["Department"],
-                   # dependencies=[Depends(get_current_auth_user)]
+                   dependencies=[Depends(get_current_auth_user)]
                    )
 
 
@@ -48,5 +48,5 @@ async def delete_department(_id: int, uow: UnitOfWork = Depends(UnitOfWork)) -> 
 
 
 @router.put('/change-struct')
-async def change_struct(_id: int, uow: UnitOfWork = Depends(UnitOfWork)):
-    await DepartmentService().change_struct(uow=uow, _id=_id)
+async def change_struct(_id: int):
+    await DepartmentService().change_struct(_id=_id)
